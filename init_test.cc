@@ -11,6 +11,11 @@ void write_callback(void* arg, const struct spdk_nvme_cpl* completion)
     printf("write finished!\n");
 }
 
+void read_callback(void* arg, const struct spdk_nvme_cpl* completion)
+{
+    printf("read finished!\n");
+}
+
 void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
 {
     printf("1\n");
@@ -18,16 +23,27 @@ void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
     if (qpair != nullptr) {
         printf("2\n");
     }
-    char* buf = (char*)spdk_nvme_ctrlr_alloc_cmb_io_buffer(ctrlr, 0x1000); // 4KB
-    if (buf != nullptr) {
+    char* wbuf = (char*)spdk_nvme_ctrlr_alloc_cmb_io_buffer(ctrlr, 0x1000); // 4KB
+    if (wbuf != nullptr) {
         printf("3.1\n");
     } else {
         printf("3.2\n");
-        buf = (char *)spdk_zmalloc(0x1000, 0x1000, nullptr, SPDK_ENV_SOCKET_ID_ANY, SPDK_MALLOC_DMA);
+        wbuf = (char*)spdk_zmalloc(0x1000, 0x1000, nullptr, SPDK_ENV_SOCKET_ID_ANY, SPDK_MALLOC_DMA);
     }
     strcpy(buf, "hello world, hello world, hello world.");
     printf("4\n");
-    int rc = spdk_nvme_ns_cmd_write(ns, qpair, buf, 0, 1, write_callback, nullptr, 0);
+    int rc = spdk_nvme_ns_cmd_write(ns, qpair, wbuf, 0, 1, write_callback, nullptr, 0);
+    printf("%d\n", rc);
+
+    char* rbuf = (char*)spdk_nvme_ctrlr_alloc_cmb_io_buffer(ctrlr, 0x1000); // 4KB
+    if (rbuf != nullptr) {
+        printf("5.1\n");
+    } else {
+        printf("5.2\n");
+        rbuf = (char*)spdk_zmalloc(0x1000, 0x1000, nullptr, SPDK_ENV_SOCKET_ID_ANY, SPDK_MALLOC_DMA);
+    }
+    int rc = spdk_nvme_ns_cmd_read(ns, qpair, rbuf, 0, 1, read_callback, nullptr, 0);
+    printf("%s\n", rbuf);
     printf("%d\n", rc);
 }
 
