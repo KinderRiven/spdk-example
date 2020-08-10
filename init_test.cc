@@ -19,7 +19,9 @@ void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
         printf("2\n");
     }
     char* buf = (char*)spdk_nvme_ctrlr_alloc_cmb_io_buffer(ctrlr, 0x1000); // 4KB
-    printf("3\n");
+    if (buf != nullptr) {
+        printf("3\n");
+    }
     strcpy(buf, "hello world, hello world, hello world.");
     printf("4\n");
     int rc = spdk_nvme_ns_cmd_write(ns, qpair, buf, 0, 1, write_callback, nullptr, 0);
