@@ -1,4 +1,4 @@
-SPDK_LINK_FLAGS= -Wl,--whole-archive -Llib/dpdk -ldpdk  \
+# SPDK_LINK_FLAGS= -Wl,--whole-archive -Llib/dpdk -ldpdk  \
 	-Llib/spdk \
 	-lspdk_app_rpc -lspdk_blobfs_bdev -lspdk_jsonrpc \
 	-lspdk_bdev -lspdk_conf -lspdk_log \
@@ -22,7 +22,7 @@ SPDK_LINK_FLAGS= -Wl,--whole-archive -Llib/dpdk -ldpdk  \
 	-lspdk_blobfs -lspdk_json -lspdk_vmd \
     -Wl,--no-whole-archive  -lpthread -lrt -lnuma -ldl -luuid -lm
 
-# SPDK_LINK_FLAGS= -Wl,--whole-archive  -Llib/dpdk -lspdk_env_dpdk  -lspdk_env_dpdk_rpc \
+SPDK_LINK_FLAGS= -Wl,--whole-archive  -Llib/dpdk -lspdk_env_dpdk  -lspdk_env_dpdk_rpc \
     -Llib/spdk -ldpdk  \
     -lspdk_json -lspdk_jsonrpc -lspdk_log_rpc  -lspdk_app_rpc  -lspdk_rpc \
     -lspdk_bdev_rpc -lspdk_bdev_null -lspdk_bdev_malloc \
@@ -35,7 +35,7 @@ SPDK_LINK_FLAGS= -Wl,--whole-archive -Llib/dpdk -ldpdk  \
     -lspdk_ftl \
     -lspdk_log -lspdk_trace -lspdk_util -lspdk_copy -lspdk_conf \
     -lspdk_vmd \
-    -Wl,--no-whole-archive  -lpthread -lrt -lnuma -ldl -luuid -lm
+    -Wl,--no-whole-archive  -lpthread -lrt -lnuma -ldl -luuid -lm -lisal
 
 all:
 	g++ init_test.cc -o init_test -Iinclude $(SPDK_LINK_FLAGS)

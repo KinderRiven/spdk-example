@@ -9,13 +9,14 @@
 static bool fun1(void* cb_ctx, const struct spdk_nvme_transport_id* trid,
     struct spdk_nvme_ctrlr_opts* opts)
 {
-    printf("function1()!\n");
+    printf("function1(%s)!\n", trid->traddr);
 }
 
 static void fun2(void* cb_ctx, const struct spdk_nvme_transport_id* trid,
     struct spdk_nvme_ctrlr* ctrlr, const struct spdk_nvme_ctrlr_opts* opts)
 {
-    printf("function2()!\n");
+    printf("function2(%s)!\n", trid->traddr);
+    const struct spdk_nvme_ctrlr_data* cdata = spdk_nvme_ctrlr_get_data(ctrlr);
 }
 
 int main(int argc, char** argv)
