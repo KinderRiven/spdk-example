@@ -16,10 +16,20 @@ static void fun2(void* cb_ctx, const struct spdk_nvme_transport_id* trid,
     struct spdk_nvme_ctrlr* ctrlr, const struct spdk_nvme_ctrlr_opts* opts)
 {
     printf("function2(%s)!\n", trid->traddr);
+
     const struct spdk_nvme_ctrlr_data* cdata = spdk_nvme_ctrlr_get_data(ctrlr);
-    printf("%d-%d-%s-%s-%s\n", cdata->vid, cdata->ssvid, cdata->sn, cdata->mn, cdata->fr);
+
+    printf("[%d-%d][%s-%s-%s]\n", cdata->vid, cdata->ssvid, cdata->sn, cdata->mn, cdata->fr);
+
     uint32_t num_ns = spdk_nvme_ctrlr_get_num_ns(ctrlr);
+
     printf("num namespace:%d\n", num_ns);
+    
+    for (int i = 1; i <= num_ns; i++) {
+        struct spdk_nvme_ns* ns = spdk_nvme_ctrlr_get_ns(ctrlr, i);
+        uint64_t sz = spdk_nvme_ns_get_size(ns);
+        printf("[%d][Size:%lluGB]\n", i, sz / 1000000000);
+    }
 }
 
 int main(int argc, char** argv)
