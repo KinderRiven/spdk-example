@@ -33,7 +33,7 @@ void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
     strcpy(wbuf, "hello world, hello world, hello world.");
     printf("4\n");
     int rc = spdk_nvme_ns_cmd_write(ns, qpair, wbuf, 0, 1, write_callback, nullptr, 0);
-    int num = spdk_nvme_qpair_process_completions(qpair, 0);
+    int num = spdk_nvme_qpair_process_completions(qpair, 1);
     printf("%d-%d\n", rc, num);
 
     char* rbuf = (char*)spdk_nvme_ctrlr_alloc_cmb_io_buffer(ctrlr, 0x1000); // 4KB
@@ -44,7 +44,7 @@ void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
         rbuf = (char*)spdk_zmalloc(0x1000, 0x1000, nullptr, SPDK_ENV_SOCKET_ID_ANY, SPDK_MALLOC_DMA);
     }
     rc = spdk_nvme_ns_cmd_read(ns, qpair, rbuf, 0, 1, read_callback, nullptr, 0);
-    num = spdk_nvme_qpair_process_completions(qpair, 0);
+    num = spdk_nvme_qpair_process_completions(qpair, 1);
     printf("%d-%d\n", rc, num);
 }
 
