@@ -6,6 +6,24 @@
 #include <stdint.h>
 #include <stdio.h>
 
+void write_callback(void* arg, const struct spdk_nvme_cpl* completion)
+{
+    printf("write finished!\n");
+}
+
+void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
+{
+    struct spdk_nvme_qpair* qpair = spdk_nvme_ctrlr_alloc_io_qpair(ctrlr, NULL, 0);
+    char* buf = spdk_nvme_ctrlr_alloc_cmb_io_buffer(ctrlr, 0x1000); // 4KB
+    strcpy(buf, "hello world, hello world, hello world.\n");
+    int rc = spdk_nvme_ns_cmd_write(ns, qpair, buf, 0, 1, write_callback, nullptr, 0);
+    printf("%d\n", rc);
+}
+
+void do_read(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
+{
+}
+
 static bool fun1(void* cb_ctx, const struct spdk_nvme_transport_id* trid,
     struct spdk_nvme_ctrlr_opts* opts)
 {
@@ -28,24 +46,6 @@ static void fun2(void* cb_ctx, const struct spdk_nvme_transport_id* trid,
         printf("[%d][Size:%lluGB]\n", i, sz / 1000000000);
         do_write(ctrlr, ns);
     }
-}
-
-void write_callback(void* arg, const struct spdk_nvme_cpl* completion)
-{
-    printf("write finished!\n");
-}
-
-void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
-{
-    struct spdk_nvme_qpair* qpair = spdk_nvme_ctrlr_alloc_io_qpair(ctrlr, NULL, 0);
-    char* buf = spdk_nvme_ctrlr_alloc_cmb_io_buffer(ctrlr, 0x1000); // 4KB
-    strcpy(buf, "hello world, hello world, hello world.\n");
-    int rc = spdk_nvme_ns_cmd_write(ns, qpair, buf, 0, 1, write_callback, nullptr, 0);
-    printf("%d\n", rc);
-}
-
-void do_read(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
-{
 }
 
 int main(int argc, char** argv)
