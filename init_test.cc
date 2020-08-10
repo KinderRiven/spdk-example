@@ -20,7 +20,10 @@ void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
     }
     char* buf = (char*)spdk_nvme_ctrlr_alloc_cmb_io_buffer(ctrlr, 0x1000); // 4KB
     if (buf != nullptr) {
-        printf("3\n");
+        printf("3.1\n");
+    } else {
+        printf("3.2\n");
+        buf = (char *)spdk_zmalloc(0x1000, 0x1000, NULL, SPDK_ENV_SOCKET_ID_ANY, SPDK_MALLOC_DMA);
     }
     strcpy(buf, "hello world, hello world, hello world.");
     printf("4\n");
