@@ -42,7 +42,7 @@ void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
         printf("5.2\n");
         rbuf = (char*)spdk_zmalloc(0x1000, 0x1000, nullptr, SPDK_ENV_SOCKET_ID_ANY, SPDK_MALLOC_DMA);
     }
-    int rc = spdk_nvme_ns_cmd_read(ns, qpair, rbuf, 0, 1, read_callback, nullptr, 0);
+    rc = spdk_nvme_ns_cmd_read(ns, qpair, rbuf, 0, 1, read_callback, nullptr, 0);
     printf("%s\n", rbuf);
     printf("%d\n", rc);
 }
