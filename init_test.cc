@@ -13,7 +13,7 @@ void write_callback(void* arg, const struct spdk_nvme_cpl* completion)
 
 void read_callback(void* arg, const struct spdk_nvme_cpl* completion)
 {
-    printf("read finished!\n");
+    printf("read finished! (%s)\n", (char *)arg);
 }
 
 void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
@@ -43,7 +43,7 @@ void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
         printf("5.2\n");
         rbuf = (char*)spdk_zmalloc(0x1000, 0x1000, nullptr, SPDK_ENV_SOCKET_ID_ANY, SPDK_MALLOC_DMA);
     }
-    rc = spdk_nvme_ns_cmd_read(ns, qpair, rbuf, 0, 1, read_callback, nullptr, 0);
+    rc = spdk_nvme_ns_cmd_read(ns, qpair, rbuf, 0, 1, read_callback, (void *)rbuf, 0);
     num = spdk_nvme_qpair_process_completions(qpair, 1);
     printf("%d-%d\n", rc, num);
 }
