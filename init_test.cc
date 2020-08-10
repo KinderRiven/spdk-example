@@ -88,7 +88,7 @@ static void fun2(void* cb_ctx, const struct spdk_nvme_transport_id* trid,
         uint64_t sz = spdk_nvme_ns_get_size(ns);
         printf("[%d][Size:%lluGB]\n", i, sz / 1000000000);
         do_write(ctrlr, ns);
-        do_read(ctrl, ns);
+        do_read(ctrlr, ns);
     }
 }
 
