@@ -8,6 +8,8 @@
 
 void write_callback(void* arg, const struct spdk_nvme_cpl* completion)
 {
+    int* finished = (int*)arg;
+    *finished = 1;
     printf("write finished!\n");
 }
 
@@ -18,6 +20,7 @@ void read_callback(void* arg, const struct spdk_nvme_cpl* completion)
 
 void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
 {
+    int finished = 0;
     printf("1\n");
     struct spdk_nvme_qpair* qpair = spdk_nvme_ctrlr_alloc_io_qpair(ctrlr, NULL, 0);
     if (qpair != nullptr) {
@@ -32,9 +35,10 @@ void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
     }
     strcpy(wbuf, "hello world, hello world, hello world.");
     printf("4\n");
-    int rc = spdk_nvme_ns_cmd_write(ns, qpair, wbuf, 0, 1, write_callback, nullptr, 0);
-    int num = spdk_nvme_qpair_process_completions(qpair, 0);
-    printf("%d-%d\n", rc, num);
+    int rc = spdk_nvme_ns_cmd_write(ns, qpair, wbuf, 0, 1, write_callback, (void*)&finished, 0);
+    while (!finished) {
+        int num = spdk_nvme_qpair_process_completions(qpair, 0);
+    }
 }
 
 void do_read(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
