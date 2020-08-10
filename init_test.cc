@@ -44,8 +44,9 @@ void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
         rbuf = (char*)spdk_zmalloc(0x1000, 0x1000, nullptr, SPDK_ENV_SOCKET_ID_ANY, SPDK_MALLOC_DMA);
     }
     rc = spdk_nvme_ns_cmd_read(ns, qpair, rbuf, 0, 1, read_callback, nullptr, 0);
-    spdk_nvme_qpair_process_completions(qpair, 0);
     printf("%d\n", rc);
+    spdk_nvme_qpair_process_completions(qpair, 0);
+    spdk_nvme_ctrlr_free_io_qpair(qpair);
 }
 
 void do_read(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
