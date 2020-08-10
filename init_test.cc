@@ -14,7 +14,7 @@ void write_callback(void* arg, const struct spdk_nvme_cpl* completion)
 void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
 {
     struct spdk_nvme_qpair* qpair = spdk_nvme_ctrlr_alloc_io_qpair(ctrlr, NULL, 0);
-    char* buf = spdk_nvme_ctrlr_alloc_cmb_io_buffer(ctrlr, 0x1000); // 4KB
+    char* buf = (char *)spdk_nvme_ctrlr_alloc_cmb_io_buffer(ctrlr, 0x1000); // 4KB
     strcpy(buf, "hello world, hello world, hello world.\n");
     int rc = spdk_nvme_ns_cmd_write(ns, qpair, buf, 0, 1, write_callback, nullptr, 0);
     printf("%d\n", rc);
