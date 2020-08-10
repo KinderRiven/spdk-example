@@ -17,6 +17,9 @@ static void fun2(void* cb_ctx, const struct spdk_nvme_transport_id* trid,
 {
     printf("function2(%s)!\n", trid->traddr);
     const struct spdk_nvme_ctrlr_data* cdata = spdk_nvme_ctrlr_get_data(ctrlr);
+    printf("%d-%d\n", cdata->vid, cdata->ssvid);
+    uint32_t num_ns = spdk_nvme_ctrlr_get_num_ns(ctrlr);
+    printf("num namespace:%d\n", num_ns);
 }
 
 int main(int argc, char** argv)
