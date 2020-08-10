@@ -30,7 +30,7 @@ void do_write(struct spdk_nvme_ctrlr* ctrlr, struct spdk_nvme_ns* ns)
         printf("3.2\n");
         wbuf = (char*)spdk_zmalloc(0x1000, 0x1000, nullptr, SPDK_ENV_SOCKET_ID_ANY, SPDK_MALLOC_DMA);
     }
-    strcpy(buf, "hello world, hello world, hello world.");
+    strcpy(wbuf, "hello world, hello world, hello world.");
     printf("4\n");
     int rc = spdk_nvme_ns_cmd_write(ns, qpair, wbuf, 0, 1, write_callback, nullptr, 0);
     printf("%d\n", rc);
